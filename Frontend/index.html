@@ -1,0 +1,31 @@
+<script>
+    if (!localStorage.getItem('userEmail')) {
+        window.location.href = 'login.html';
+    }
+
+    async function loadPets() {
+        const email = localStorage.getItem('userEmail');
+        try {
+            const res = await fetch(`https://localhost:7176/api/Pets?email=${email}`);
+            const pets = await res.json();
+            const list = document.getElementById('petList');
+            list.innerHTML = pets.map(p => `
+                <div class="col-md-4">
+                    <div class="card p-3 mb-3">
+                        <h5>${p.name}</h5>
+                        <p>Breed: ${p.breed}</p>
+                    </div>
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error("Veri çekilemedi:", err);
+        }
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    }
+
+    loadPets();
+</script>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard - PetPulse</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-primary p-3">
+        <div class="container">
+            <span class="navbar-brand">User Dashboard</span>
+            <div class="d-flex align-items-center">
+                <span id="welcomeMessage" class="me-3 text-white fw-bold"></span>
+                <button class="btn btn-outline-light btn-sm" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card p-3 shadow-sm mb-4">
+                    <h5>Add New Pet</h5>
+                    <form id="addPetForm">
+                        <input type="text" id="petName" class="form-control form-control-sm mb-2" placeholder="Pet Name" required>
+                        <input type="text" id="petBreed" class="form-control form-control-sm mb-2" placeholder="Breed" required>
+                        <input type="number" id="petAge" class="form-control form-control-sm mb-2" placeholder="Age" required>
+                        <input type="number" step="0.1" id="petWeight" class="form-control form-control-sm mb-2" placeholder="Weight (kg)" required>
+                        <input type="text" id="petVaccine" class="form-control form-control-sm mb-2" placeholder="Vaccine Schedule">
+                        <input type="text" id="petDiet" class="form-control form-control-sm mb-2" placeholder="Dietary Needs">
+                        <button type="submit" class="btn btn-success btn-sm w-100">Save Pet</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <h4>My Pets</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped bg-white shadow-sm align-middle">
+                        <thead>
+                            <tr><th>Name</th><th>Breed</th><th>Age/Weight</th><th>Needs</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="petsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Pet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editPetId">
+                    
+                    <div class="mb-2">
+                        <label class="form-label small text-muted m-0">Pet Owner (Sahibi)</label>
+                        <input type="text" id="editPetOwner" class="form-control bg-light" readonly>
+                    </div>
+
+                    <input type="text" id="editPetName" class="form-control mb-2" placeholder="Name" required>
+                    <input type="text" id="editPetBreed" class="form-control mb-2" placeholder="Breed" required>
+                    <input type="number" id="editPetAge" class="form-control mb-2" placeholder="Age" required>
+                    <input type="number" step="0.1" id="editPetWeight" class="form-control mb-2" placeholder="Weight" required>
+                    <input type="text" id="editPetVaccine" class="form-control mb-2" placeholder="Vaccine">
+                    <input type="text" id="editPetDiet" class="form-control mb-2" placeholder="Diet">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary w-100" onclick="updatePet()">Update Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="logsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pet Health & Activity Logs</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="logPetId">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>Add New Log</h6>
+                            <input type="text" id="logType" class="form-control form-control-sm mb-2" placeholder="Log Type (e.g. Vaccine, Vet, Diet)" required>
+                            <textarea id="logDesc" class="form-control form-control-sm mb-2" placeholder="Description details..." rows="3" required></textarea>
+                            <button class="btn btn-info btn-sm text-white w-100" onclick="saveLog()">Save Log</button>
+                        </div>
+                        <div class="col-md-8">
+                            <h6>Log History</h6>
+                            <ul class="list-group" id="logsList"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
