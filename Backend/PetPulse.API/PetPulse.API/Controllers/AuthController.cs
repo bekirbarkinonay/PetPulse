@@ -22,19 +22,24 @@ namespace PetPulse.API.Controllers
             _users = database.GetCollection<User>("Users");
         }
 
-        // --- GİRİŞ YAPMA (LOGIN) ---
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto loginUser)
-        {
-            var user = await _users.Find(u => u.Email == loginUser.Email && u.Password == loginUser.Password).FirstOrDefaultAsync();
+       [HttpPost("login")]
+public async Task<IActionResult> Login([FromBody] UserLoginDto loginUser)
+{
+    // Veritabanında eşleşen kullanıcıyı kontrol et
+    var user = await _users.Find(u => u.Email == loginUser.Email).FirstOrDefaultAsync();
 
-            if (user == null)
-            {
-                return Unauthorized("E-posta veya şifre hatalı!");
-            }
+    if (user == null)
+    {
+        return Unauthorized($"Kullanıcı bulunamadı: {loginUser.Email}");
+    }
+    
+    if (user.Password != loginUser.password) // küçük harf/büyük harf kontrolü
+    {
+        return Unauthorized($"Şifre eşleşmedi! DB: {user.Password} - Giriş: {loginUser.password}");
+    }
 
-            return Ok(new { email = user.Email, role = user.Role, firstName = user.FirstName, lastName = user.LastName });
-        }
+    return Ok(new { email = user.Email, role = user.Role, firstName = user.FirstName, lastName = user.LastName });
+}
 
         // --- YENİ KAYIT OLMA (REGISTER) ---
         [HttpPost("register")]
