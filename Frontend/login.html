@@ -25,12 +25,14 @@
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            // Backend'in beklediği küçük harfli alan isimleri
             const loginData = {
                 email: document.getElementById('email').value,
                 password: document.getElementById('password').value
             };
 
-            const res = await fetch('https://petpulse-api-xz76.onrender.com/api/Auth/register', {
+            // YOLU /login OLARAK GÜNCELLEDİK
+            const res = await fetch('https://petpulse-api-xz76.onrender.com/api/Auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(loginData)
@@ -40,9 +42,9 @@
                 const data = await res.json();
                 
                 // Gelen bilgileri tarayıcı hafızasına kaydet
-localStorage.setItem('userEmail', data.email);
-localStorage.setItem('userRole', data.role);
-localStorage.setItem('userName', data.firstName + ' ' + data.lastName); // BU SATIRI EKLE
+                localStorage.setItem('userEmail', data.email);
+                localStorage.setItem('userRole', data.role);
+                localStorage.setItem('userName', data.firstName + ' ' + data.lastName);
                 
                 // Role göre yetkili sayfaya yönlendir
                 if (data.role === 'Admin') {
@@ -51,7 +53,7 @@ localStorage.setItem('userName', data.firstName + ' ' + data.lastName); // BU SA
                     window.location.href = 'dashboard.html';
                 }
             } else {
-                alert("Invalid credentials! Lütfen mail veya şifrenizi kontrol edin.");
+                alert("Giriş başarısız! Lütfen mail veya şifrenizi kontrol edin.");
             }
         });
     </script>
