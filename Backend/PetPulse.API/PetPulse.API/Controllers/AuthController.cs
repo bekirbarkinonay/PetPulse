@@ -4,6 +4,13 @@ using PetPulse.API.Models;
 
 namespace PetPulse.API.Controllers
 {
+    // Giriş yaparken sadece gereken verileri taşıyan küçük model
+    public class UserLoginDto
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -17,13 +24,14 @@ namespace PetPulse.API.Controllers
 
         // --- GİRİŞ YAPMA (LOGIN) ---
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] User loginUser)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto loginUser)
         {
+            // Veritabanında eşleşen kullanıcıyı kontrol et
             var user = await _users.Find(u => u.Email == loginUser.Email && u.Password == loginUser.Password).FirstOrDefaultAsync();
 
             if (user == null)
             {
-                return Unauthorized("Invalid credentials!");
+                return Unauthorized("E-posta veya şifre hatalı!");
             }
 
             return Ok(new { email = user.Email, role = user.Role, firstName = user.FirstName, lastName = user.LastName });
@@ -48,12 +56,13 @@ namespace PetPulse.API.Controllers
             
             return Ok(new { message = "Kayıt başarıyla oluşturuldu!" });
         }
+
         [HttpGet("users")]
         public async Task<IActionResult> GetAllUsers(string role)
         {
             if (role != "Admin") return Unauthorized("Sadece adminler görebilir.");
             var users = await _users.Find(_ => true).ToListAsync();
-            return Ok(users);
+            return Ok(users);S
         }
     }
 }
