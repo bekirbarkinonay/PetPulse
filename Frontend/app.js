@@ -1,4 +1,4 @@
-const API_BASE = 'https://localhost:7176/api';
+const API_BASE = 'https://petpulse-api-xz76.onrender.com';
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Yetki Kontrolü: Giriş yapılmamışsa login'e at
