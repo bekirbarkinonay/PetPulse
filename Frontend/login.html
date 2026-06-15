@@ -30,7 +30,7 @@
                 password: document.getElementById('password').value
             };
 
-            const res = await fetch('https://localhost:7176/api/Auth/login', {
+            const res = await fetch('https://petpulse-api-xz76.onrender.com/api/Auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(loginData)
