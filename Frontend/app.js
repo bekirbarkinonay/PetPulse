@@ -84,17 +84,30 @@ function renderPets(pets) {
 }
 
 // ARAMA FONKSİYONU
+// ARAMA FONKSİYONU
 function searchPets() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
+    const query = document.getElementById('searchInput') 
+        ? document.getElementById('searchInput').value.toLowerCase().trim() 
+        : '';
+    
+    if (!query) {
+        renderPets(allPets);
+        return;
+    }
+
     const filtered = allPets.filter(p => 
-        p.name.toLowerCase().includes(query) || 
-        p.breed.toLowerCase().includes(query)
+        (p.name && p.name.toLowerCase().includes(query)) || 
+        (p.breed && p.breed.toLowerCase().includes(query))
     );
     renderPets(filtered);
 }
 
 // SIRALAMA FONKSİYONU
 function sortPets(field) {
+    if (!field) {
+        renderPets(allPets);
+        return;
+    }
     const sorted = [...allPets].sort((a, b) => {
         if (typeof a[field] === 'string') return a[field].localeCompare(b[field]);
         return a[field] - b[field];
