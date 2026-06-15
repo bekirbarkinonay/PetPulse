@@ -26,7 +26,6 @@ namespace PetPulse.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto loginUser)
         {
-            // Veritabanında eşleşen kullanıcıyı kontrol et
             var user = await _users.Find(u => u.Email == loginUser.Email && u.Password == loginUser.Password).FirstOrDefaultAsync();
 
             if (user == null)
@@ -41,17 +40,13 @@ namespace PetPulse.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User newUser)
         {
-            // 1. Bu mail adresi daha önce alınmış mı kontrol et
             var existingUser = await _users.Find(u => u.Email == newUser.Email).FirstOrDefaultAsync();
             if (existingUser != null) 
             {
                 return BadRequest("Bu e-posta adresi zaten kullanımda.");
             }
 
-            // 2. Yeni gelen kişiyi her zaman standart "User" yetkisiyle kaydet
             newUser.Role = "User";
-            
-            // 3. Veritabanına ekle
             await _users.InsertOneAsync(newUser);
             
             return Ok(new { message = "Kayıt başarıyla oluşturuldu!" });
@@ -62,7 +57,7 @@ namespace PetPulse.API.Controllers
         {
             if (role != "Admin") return Unauthorized("Sadece adminler görebilir.");
             var users = await _users.Find(_ => true).ToListAsync();
-            return Ok(users);S
+            return Ok(users);
         }
     }
 }
