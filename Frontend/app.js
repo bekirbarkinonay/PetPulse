@@ -43,42 +43,63 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- HAYVANLARI LİSTELEME VE BUTONLARI OLUŞTURMA ---
+let allPets = []; // Global pet listesi
+
 async function fetchPets() {
     const email = localStorage.getItem('userEmail');
     const role = localStorage.getItem('userRole');
     
     try {
         const res = await fetch(`${API_BASE}/Pets?email=${email}&role=${role}`);
-        const pets = await res.json();
-        
-        // Admin tablosu veya User tablosunu bul
-        const tableBody = document.getElementById('petsTableBody') || document.getElementById('adminTable');
-        
-        if(tableBody) {
-            tableBody.innerHTML = pets.map(p => {
-                const petId = p.id || p.Id;
-                
-                // Eğer giriş yapan Admin ise, Sahibinin e-postasını gösteren ekstra sütun ekle
-                const ownerCol = role === 'Admin' ? `<td><small class="text-primary">${p.ownerEmail}</small></td>` : '';
-                
-                return `
-                <tr>
-                    <td><strong>${p.name}</strong></td>
-                    <td>${p.breed}</td>
-                    <td>${p.age} years, ${p.weight} kg</td>
-                    <td><small>Vac: ${p.vaccinationSchedule || '-'} <br> Diet: ${p.dietaryRequirements || '-'}</small></td>
-                    ${ownerCol}
-                    <td>
-                        <button class="btn btn-warning btn-sm text-dark" onclick="openEditModal('${petId}', '${p.name}', '${p.breed}', ${p.age}, ${p.weight}, '${p.vaccinationSchedule}', '${p.dietaryRequirements}', '${p.ownerEmail}')">Edit</button>
-                        <button class="btn btn-info btn-sm text-white" onclick="openLogsModal('${petId}')">Logs</button>
-                        <button class="btn btn-danger btn-sm" onclick="deletePet('${petId}')">Delete</button>
-                    </td>
-                </tr>
-            `}).join('');
-        }
+        allPets = await res.json();
+        renderPets(allPets);
     } catch (error) {
         console.error("Veriler çekilirken hata oluştu:", error);
     }
+}
+
+function renderPets(pets) {
+    const role = localStorage.getItem('userRole');
+    const tableBody = document.getElementById('petsTableBody') || document.getElementById('adminTable');
+    
+    if(tableBody) {
+        tableBody.innerHTML = pets.map(p => {
+            const petId = p.id || p.Id;
+            const ownerCol = role === 'Admin' ? `<td><small class="text-primary">${p.ownerEmail}</small></td>` : '';
+            return `
+            <tr>
+                <td><strong>${p.name}</strong></td>
+                <td>${p.breed}</td>
+                <td>${p.age} years, ${p.weight} kg</td>
+                <td><small>Vac: ${p.vaccinationSchedule || '-'} <br> Diet: ${p.dietaryRequirements || '-'}</small></td>
+                ${ownerCol}
+                <td>
+                    <button class="btn btn-warning btn-sm text-dark" onclick="openEditModal('${petId}', '${p.name}', '${p.breed}', ${p.age}, ${p.weight}, '${p.vaccinationSchedule}', '${p.dietaryRequirements}', '${p.ownerEmail}')">Edit</button>
+                    <button class="btn btn-info btn-sm text-white" onclick="openLogsModal('${petId}')">Logs</button>
+                    <button class="btn btn-danger btn-sm" onclick="deletePet('${petId}')">Delete</button>
+                </td>
+            </tr>`
+        }).join('');
+    }
+}
+
+// ARAMA FONKSİYONU
+function searchPets() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = allPets.filter(p => 
+        p.name.toLowerCase().includes(query) || 
+        p.breed.toLowerCase().includes(query)
+    );
+    renderPets(filtered);
+}
+
+// SIRALAMA FONKSİYONU
+function sortPets(field) {
+    const sorted = [...allPets].sort((a, b) => {
+        if (typeof a[field] === 'string') return a[field].localeCompare(b[field]);
+        return a[field] - b[field];
+    });
+    renderPets(sorted);
 }
 
 // --- SİLME (DELETE) ---

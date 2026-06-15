@@ -35,6 +35,18 @@
 
             <div class="col-md-9">
                 <h4>My Pets</h4>
+
+                <div class="d-flex gap-2 mb-3">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search by name or breed..." oninput="searchPets()">
+                    <select class="form-select w-auto" onchange="sortPets(this.value)">
+                        <option value="">Sort by...</option>
+                        <option value="name">Name</option>
+                        <option value="breed">Breed</option>
+                        <option value="age">Age</option>
+                        <option value="weight">Weight</option>
+                    </select>
+                </div>
+
                 <div class="table-responsive">
                     <table class="table table-striped bg-white shadow-sm align-middle">
                         <thead>
@@ -56,12 +68,10 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="editPetId">
-                    
                     <div class="mb-2">
                         <label class="form-label small text-muted m-0">Pet Owner (Sahibi)</label>
                         <input type="text" id="editPetOwner" class="form-control bg-light" readonly>
                     </div>
-
                     <input type="text" id="editPetName" class="form-control mb-2" placeholder="Name" required>
                     <input type="text" id="editPetBreed" class="form-control mb-2" placeholder="Breed" required>
                     <input type="number" id="editPetAge" class="form-control mb-2" placeholder="Age" required>
