@@ -4,7 +4,6 @@ using PetPulse.API.Models;
 
 namespace PetPulse.API.Controllers
 {
-    // Giriş yaparken sadece gereken verileri taşıyan küçük model
     public class UserLoginDto
     {
         public string Email { get; set; }
@@ -22,26 +21,20 @@ namespace PetPulse.API.Controllers
             _users = database.GetCollection<User>("Users");
         }
 
-       [HttpPost("login")]
-public async Task<IActionResult> Login([FromBody] UserLoginDto loginUser)
-{
-    // Veritabanında eşleşen kullanıcıyı kontrol et
-    var user = await _users.Find(u => u.Email == loginUser.Email).FirstOrDefaultAsync();
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] UserLoginDto loginUser)
+        {
+            // Veritabanı sorgusu
+            var user = await _users.Find(u => u.Email == loginUser.Email && u.Password == loginUser.Password).FirstOrDefaultAsync();
 
-    if (user == null)
-    {
-        return Unauthorized($"Kullanıcı bulunamadı: {loginUser.Email}");
-    }
-    
-    if (user.Password != loginUser.password) // küçük harf/büyük harf kontrolü
-    {
-        return Unauthorized($"Şifre eşleşmedi! DB: {user.Password} - Giriş: {loginUser.password}");
-    }
+            if (user == null)
+            {
+                return Unauthorized("E-posta veya şifre hatalı!");
+            }
 
-    return Ok(new { email = user.Email, role = user.Role, firstName = user.FirstName, lastName = user.LastName });
-}
+            return Ok(new { email = user.Email, role = user.Role, firstName = user.FirstName, lastName = user.LastName });
+        }
 
-        // --- YENİ KAYIT OLMA (REGISTER) ---
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User newUser)
         {
