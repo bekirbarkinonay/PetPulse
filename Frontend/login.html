@@ -26,10 +26,11 @@
             e.preventDefault();
             
             // Backend'in beklediği küçük harfli alan isimleri
-            const loginData = {
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value
-            };
+            // login.html dosyasındaki şu kısmı bul ve değiştir:
+const loginData = {
+    Email: document.getElementById('email').value, // E büyük
+    Password: document.getElementById('password').value // P büyük
+};
 
             // YOLU /login OLARAK GÜNCELLEDİK
             const res = await fetch('https://petpulse-api-xz76.onrender.com/api/Auth/login', {
